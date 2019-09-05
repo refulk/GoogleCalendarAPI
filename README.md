@@ -7,7 +7,7 @@ Siga o tutorial: https://developers.google.com/calendar/quickstart/python?refres
 
 Ponto importante do tutorial:
 
-1 - ENABLED THE GOOGLE CALENDAR API (download client configuration e renomeie o arquivo para 'client_secret.json', salve no mesmo diretorio deste codigo)
+1 - Caso ainda NÃO tenha as credenciais: ENABLED THE GOOGLE CALENDAR API (download client configuration e renomeie o arquivo para 'client_secret.json', salve no mesmo diretorio deste codigo)
 
 2 - EXECUTE: pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
 
