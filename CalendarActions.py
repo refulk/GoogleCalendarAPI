@@ -5,12 +5,12 @@
 # Ponto importante do tutorial:
 # 1 - Caso ainda NAO tenha as credenciais: ENABLED THE GOOGLE CALENDAR API (download client configuration e renomeie o arquivo para 'client_secret.json', salve no mesmo diretorio deste codigo)
 # 2 - EXECUTE: pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
-# 
+#
 # Outros links, utilizados para consulta e desenvolvimento:
 # > Tutorial google:
-# https://developers.google.com/calendar/ 
+# https://developers.google.com/calendar/
 # > Ensina a ler e inserir eventos
-# https://www.youtube.com/watch?v=j1mh0or2CX8 
+# https://www.youtube.com/watch?v=j1mh0or2CX8
 # > Documentacao, referencia (comandos):
 # https://developers.google.com/calendar/v3/reference/events/insert
 ###############################################################################################################
@@ -63,20 +63,25 @@ class CalendarActions:
     def getEvents(self, startDate, qtdDays, emailFilter=None):
         returnQuery = []
         endDate = startDate + timedelta(days=qtdDays)
-        startDate = startDate.isoformat() + 'Z' # 'Z' indicates UTC time 
+        startDate = startDate.isoformat() + 'Z' # 'Z' indicates UTC time
         endDate = endDate.isoformat() + 'Z' # 'Z' indicates UTC time
 
+        credentials = pickle.load(open("token.pickle", "rb"))
+
+        service = build("calendar", "v3", credentials=credentials)
+
         #Get My Calendars
-        #events_result = service.calendarList().list().execute()
-        #print (events_result['items'][0])
-        #print (events_result['items'][0]['id']) #id from calendar (email)
+        events_result = service.calendarList().list().execute()
+        print (events_result['items'][0])
+        print('email')
+        print (events_result['items'][0]['id']) #id from calendar (email)
 
         #Get My Calendar Events
         #print('Getting events')
         events_result = self.service.events().list(calendarId='primary', timeMin=startDate,
                                             timeMax=endDate, singleEvents=True,
                                             orderBy='startTime', timeZone=self.timezone).execute()
-        events = events_result.get('items', [])   
+        events = events_result.get('items', [])
 
         #Filtra por email caso events e emailFilter nao sejam vazios
         if events and emailFilter != None:
@@ -84,7 +89,7 @@ class CalendarActions:
                 for email in event['attendees']:
                     email = str(email)
                     if emailFilter in email:
-                        returnQuery.append(event)                
+                        returnQuery.append(event)
             return returnQuery
         else: #Caso contrario retorna o resultado da query sem passar pelo filtro
             return events
@@ -92,7 +97,7 @@ class CalendarActions:
     # INSERCAO DE UM NOVO EVENTO
     def createEvent(self, startDate, summary, email, email2, durationHours=1, location=None, description=None):
         endDate = startDate + timedelta(hours = durationHours)
-        
+
         event = {
             'summary': summary,
             'location': location,
@@ -141,7 +146,7 @@ if __name__ == '__main__':
 
     ### Create an event #########################################################################
     startDate = datetime(2019,9,6,10,0,0) #year month day hour minute second
-    calendar.createEvent(startDate, "summary", "advogado@email.com", "cliente@email.com", 0.5, "location", "description")    
+    calendar.createEvent(startDate, "summary", "advogado@email.com", "cliente@email.com", 0.5, "location", "description")
     #############################################################################################
 
     ### Get all events in next 5 days ######################################
@@ -158,14 +163,14 @@ if __name__ == '__main__':
     ### Get first event id #######
     if events:
         idExc = events[0]['id']
-    else:    
+    else:
         idExc = None
     #############################
 
     ### Delete first event, if it exists ####
     # 0 > fail
     # 1 > sucess
-    print(calendar.deleteEvent(idExc)) # aelu68kkrrvaffl7tei35uh51c  >> id example
+    #pri(calendar.deleteEvent(idExc)) # aelu68kkrrvaffl7tei35uh51c  >> id example
     #########################################
 
     events = calendar.getEvents(startDate, qtdDays)  #apos excluir consulta novamente
