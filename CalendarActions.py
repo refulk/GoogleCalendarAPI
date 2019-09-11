@@ -55,8 +55,12 @@ class CalendarActions:
         if not events:
             print('No upcoming events found.')
         for event in events:
+            print()
             start = event['start'].get('dateTime', event['start'].get('date'))
-            print(start, event['summary'])
+            print(start)
+            print('Location: ', event['location'])
+            print('Status: ', event['status'])
+            print()
 
     # LEITURA DE DADOS
     # eh possivel filtrar por advogado, atraves de seu email
@@ -73,9 +77,8 @@ class CalendarActions:
         #Get My Calendars
         events_result = service.calendarList().list().execute()
         print (events_result['items'][0])
-        print('email')
-        print (events_result['items'][0]['id']) #id from calendar (email)
-
+        print()
+        print ('Email', events_result['items'][0]['id']) #id from calendar (email)
         #Get My Calendar Events
         #print('Getting events')
         events_result = self.service.events().list(calendarId='primary', timeMin=startDate,
@@ -128,6 +131,7 @@ class CalendarActions:
         event = self.service.events().insert(calendarId='primary', body=event).execute()
         #print ('Event created: %s' % (event.get('htmlLink')))
 
+
     # DELETAR EVENTO
     # eh preciso primeiramente realizar uma consulta para obter o ID do evento
     # o ID eh passado como parametro e entao eh feita a exclusao
@@ -145,8 +149,10 @@ if __name__ == '__main__':
     ###############################
 
     ### Create an event #########################################################################
-    startDate = datetime(2019,9,6,10,0,0) #year month day hour minute second
-    calendar.createEvent(startDate, "summary", "advogado@email.com", "cliente@email.com", 0.5, "location", "description")
+    startDate = datetime(2019,9,12,10,0,0) #year month day hour minute second
+    calendar.createEvent(startDate, 'summary', 'advogado@email.com', 'cliente@email.com', 0.5, 'location', 'description')
+    startDate = datetime(2019,9,11,10,0,0) #year month day hour minute second
+    calendar.createEvent(startDate, 'summary', 'codelab.unifesp@gmail.com', 'cliente@email.com', 0.5, 'UNIFESP', 'Reuniao do codeLab')
     #############################################################################################
 
     ### Get all events in next 5 days ######################################
